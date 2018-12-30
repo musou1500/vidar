@@ -1,8 +1,12 @@
-boot.bin: boot.s
-	nasm boot.s -o boot.bin
+ipl.bin: ipl.s
+	nasm ipl.s -o ipl.bin
 
-run: boot.bin
-	qemu-system-i386 -drive file=boot.bin,format=raw,if=floppy
+vidar.img: ipl.bin
+	dd if=/dev/zero of=vidar.img bs=512  count=2880
+	dd conv=notrunc if=ipl.bin of=vidar.img
+
+run: vidar.img
+	qemu-system-i386 -drive file=vidar.img,format=raw,if=floppy
 
 clean:
-	rm boot.bin
+	rm vidar.img ipl.bin
