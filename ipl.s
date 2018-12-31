@@ -27,8 +27,24 @@ entry:
   mov ss, ax
   mov sp, 0x7c00
   mov ds, ax
-  mov es, ax
-  mov si, msg
+
+; ディスクを読む
+  mov ax,0x0820
+  mov es,ax
+  mov ch,0
+  mov dh,0
+  mov cl,2
+  mov ah,0x02
+  mov al,1
+  mov bx,0
+  mov dl,0x00
+  int 0x13
+  jc error
+fin:
+  hlt
+  jmp fin
+error:
+  mov SI,msg
 putloop:
   mov al, [si]
   add si, 1
@@ -38,13 +54,10 @@ putloop:
   mov bx, 15
   int 0x10
   jmp putloop
-fin:
-  hlt
-  jmp fin
 msg:
   ; メッセージ部分
   db 0x0a, 0x0a
-  db "hello vidar"
+  db "load error"
   db 0x0a
   db 0
 
