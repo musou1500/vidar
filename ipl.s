@@ -34,12 +34,21 @@ entry:
   mov ch,0
   mov dh,0
   mov cl,2
+  mov si,0
+retry:
   mov ah,0x02
   mov al,1
   mov bx,0
   mov dl,0x00
   int 0x13
-  jc error
+  jnc fin
+  add si,1
+  cmp si,5
+  jae error
+  mov ah,0x00
+  mov dl,0x00
+  int 0x13
+  jmp retry
 fin:
   hlt
   jmp fin
