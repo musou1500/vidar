@@ -5,18 +5,23 @@ vidar.img: ipl.bin vidar.sys
 ipl.bin: ipl.s
 	gcc ipl.s -nostdlib -T ./ipl.ls -o ipl.bin
 
-vidar.sys: vidar.s
-	gcc vidar.s -nostdlib -T ./vidar.ls -o vidar.sys
+vidar.bin: vidar.s
+	gcc vidar.s -nostdlib -T ./vidar.ls -o vidar.bin
+
+func.o: func.s
+	as func.s -o func.o
+
+bootpack.o: bootpack.c
+	gcc bootpack.c -nostdlib -Wl,--oformat=binary -c -o bootpack.o
+
+bootpack.bin: func.o bootpack.o
+	ld -o bootpack.bin -e vidar_main --oformat=binary bootpack.o func.o
+
+vidar.sys: vidar.bin func.o bootpack.bin
+	cat vidar.bin bootpack.bin > vidar.sys
 
 run: vidar.img
 	qemu-system-i386 -drive file=vidar.img,format=raw,if=floppy
 
-# bootpack.s:
-	# gcc -m32 -masm=intel -fno-asynchronous-unwind-tables -S bootpack.c -o bootpack.s
-
-# bootpack.o: bootpack.s
-	# as --32 -o bootpack.o bootpack.s
-
 clean:
-	rm vidar.img ipl.bin bootpack.s bootpack.o
-	# rm vidar.img ipl.bin bootpack.s bootpack.o
+	rm bootpack.bin bootpack.o vidar.bin vidar.sys func.o ipl.bin vidar.img
