@@ -17,7 +17,7 @@ dd 0
 dd 2880
 db 0,0,0x29
 dd 0xffffffff
-db "VIDAR-OS   "
+db "VIDAR      "
 db "FAT12   "
 resb 18
 
