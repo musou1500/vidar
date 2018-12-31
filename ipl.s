@@ -69,6 +69,8 @@ next:
   add ch,1
   cmp ch,CYLS
   jb readloop
+  mov [0x0ff0],CH
+  jmp 0xc200
 fin:
   hlt
   jmp fin
