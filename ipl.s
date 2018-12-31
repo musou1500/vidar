@@ -2,7 +2,7 @@ ORG 0x7c00
 JMP entry
 DB 0x90
 
-db "HELLOIPL"
+db "VIDAR   "
 dw 512
 db 1
 dw 1
