@@ -1,44 +1,47 @@
-CYLS EQU 10
-ORG 0x7c00
-JMP entry
-DB 0x90
+.intel_syntax noprefix
+.equ CYLS,10
 
-db "VIDAR   "
-dw 512
-db 1
-dw 1
-db 2
-dw 224
-dw 2880
-db 0xf0
-dw 9
-dw 18
-dw 2
-dd 0
-dd 2880
-db 0,0,0x29
-dd 0xffffffff
-db "VIDAR      "
-db "FAT12   "
-resb 18
+.text
+.code16
+  jmp entry
+  .byte 0x90
 
-; プログラム本体
+  .ascii "VIDAR   "
+  .word 512
+  .byte 1
+  .word 1
+  .byte 2
+  .word 224
+  .word 2880
+  .byte 0xf0
+  .word 9
+  .word 18
+  .word 2
+  .int 0
+  .int 2880
+  .byte 0,0,0x29
+  .int 0xffffffff
+  .ascii "VIDAR      "
+  .ascii "FAT12   "
+.skip 18, 0x00
+
+# プログラム本体
 entry:
   mov ax, 0
   mov ss, ax
   mov sp, 0x7c00
   mov ds, ax
 
-  ; ディスクを読む
+  # ディスクを読む
   mov ax,0x0820
   mov es,ax
 
-  ; シリンダ，ヘッダ，セクタ
+  # シリンダ，ヘッダ，セクタ
   mov ch,0
   mov dh,0
   mov cl,2
 readloop:
-  ; リトライ回数
+  # リトライ回数
   mov si,0
 retry:
   mov ah,0x02
@@ -86,12 +89,9 @@ putloop:
   int 0x10
   jmp putloop
 msg:
-  ; メッセージ部分
-  db 0x0a, 0x0a
-  db "load error"
-  db 0x0a
-  db 0
-
-resb 0x7dfe-0x7c00-($-$$)
-db 0x55,0xaa
+  # メッセージ部分
+  .byte 0x0a, 0x0a
+  .ascii "load error"
+  .byte 0x0a
+  .byte 0
 
