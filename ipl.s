@@ -1,3 +1,4 @@
+CYLS EQU 10
 ORG 0x7c00
 JMP entry
 DB 0x90
@@ -28,12 +29,16 @@ entry:
   mov sp, 0x7c00
   mov ds, ax
 
-; ディスクを読む
+  ; ディスクを読む
   mov ax,0x0820
   mov es,ax
+
+  ; シリンダ，ヘッダ，セクタ
   mov ch,0
   mov dh,0
   mov cl,2
+readloop:
+  ; リトライ回数
   mov si,0
 retry:
   mov ah,0x02
@@ -41,7 +46,7 @@ retry:
   mov bx,0
   mov dl,0x00
   int 0x13
-  jnc fin
+  jnc next
   add si,1
   cmp si,5
   jae error
@@ -49,6 +54,21 @@ retry:
   mov dl,0x00
   int 0x13
   jmp retry
+next:
+  mov ax,es
+  add ax,512/16
+  mov es,ax
+  add cl,1
+  cmp cl,18
+  jbe readloop
+  mov cl,1
+  add dh,1
+  cmp dh,2
+  jb readloop
+  mov dh,0
+  add ch,1
+  cmp ch,CYLS
+  jb readloop
 fin:
   hlt
   jmp fin
@@ -70,6 +90,6 @@ msg:
   db 0x0a
   db 0
 
-resb 0x1fe-($-$$)
-db 0x55, 0xaa
+resb 0x7dfe-0x7c00-($-$$)
+db 0x55,0xaa
 
