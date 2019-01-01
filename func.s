@@ -2,6 +2,7 @@
 .code32
 .globl io_hlt
 .globl io_cli
+.globl write_mem8
 .globl io_sti
 .globl io_stihlt
 .globl io_out8
