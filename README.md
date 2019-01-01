@@ -2,6 +2,8 @@
 
 my toy OS
 
+![](./screenshot.png)
+
 [30日でできる!OS自作入門](http://hrb.osask.jp/) をやっていくレポジトリ
 
 
