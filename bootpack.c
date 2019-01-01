@@ -81,9 +81,9 @@ void init_palette(void)
 	io_cli();
   io_out8(0x03c8, 0);
 	for (int i = 0; i < 16; i++) {
-    io_out8(0x03c9, table_rgb[i * 3]);
-    io_out8(0x03c9, table_rgb[i * 3 + 1]);
-    io_out8(0x03c9, table_rgb[i * 3 + 2]);
+    io_out8(0x03c9, table_rgb[i * 3] / 4);
+    io_out8(0x03c9, table_rgb[i * 3 + 1] / 4);
+    io_out8(0x03c9, table_rgb[i * 3 + 2] / 4);
 	}
 	io_store_eflags(eflags);
 	return;
