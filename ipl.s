@@ -31,6 +31,7 @@ entry:
   mov ss, ax
   mov sp, 0x7c00
   mov ds, ax
+  mov es,ax
 
   # ディスクを読む
   mov ax,0x0820
@@ -59,7 +60,7 @@ retry:
   jmp retry
 next:
   mov ax,es
-  add ax,512/16
+  add ax,0x0020
   mov es,ax
   add cl,1
   cmp cl,18
@@ -72,7 +73,7 @@ next:
   add ch,1
   cmp ch,CYLS
   jb readloop
-  mov [0x0ff0],CH
+  mov [0x0ff0],ch
   jmp 0xc200
 fin:
   hlt
