@@ -25,3 +25,8 @@ run: vidar.img
 
 clean:
 	rm bootpack.bin bootpack.o vidar.bin vidar.sys func.o ipl.bin vidar.img
+
+
+format:
+	clang-format-6.0 -i bootpack.c;
+
