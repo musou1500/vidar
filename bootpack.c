@@ -18,6 +18,12 @@ enum {
   COL_D_GRAY,
 };
 
+typedef struct {
+  char cyls, leds, vmode, reserve;
+  short scrnx, scrny;
+  char *vram;
+} BootInfo;
+
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0,
@@ -25,18 +31,13 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0,
 void init_screen(char *vram, int xsize, int ysize);
 
 void vidar_main(void) {
-  char *vram;
-  short *binfo_scrnx, *binfo_scrny;
-  int *binfo_vram;
+  BootInfo *binfo = (BootInfo *)0x0ff0;
+  char *vram = binfo->vram;
 
   init_palette();
-  binfo_scrnx = (short *)0x0ff4;
-  binfo_scrny = (short *)0x0ff6;
-  binfo_vram = (int *)0x0ff8;
-  vram = (char *)*binfo_vram;
 
-  int xsize = *binfo_scrnx;
-  int ysize = *binfo_scrny;
+  int xsize = binfo->scrnx;
+  int ysize = binfo->scrny;
   init_screen(vram, xsize, ysize);
 
   for (;;) {
