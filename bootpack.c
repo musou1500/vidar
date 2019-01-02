@@ -21,16 +21,29 @@ enum {
 void init_palette(void);
 void set_palette(int start, int end, unsigned char *rgb);
 void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0, int x1, int y1);
+void init_screen(char *vram, int xsize, int ysize);
 
 void vidar_main(void) {
   char *vram;
+  short *binfo_scrnx, *binfo_scrny;
+  int *binfo_vram;
 
   init_palette();
-  vram = (char *) 0xa0000;
+  binfo_scrnx = (short *)0x0ff4;
+  binfo_scrny = (short *)0x0ff6;
+  binfo_vram = (int *)0x0ff8;
+  vram = (char *) *binfo_vram;
 
-  int xsize = 320;
-	int ysize = 200;
+  int xsize = *binfo_scrnx;
+  int ysize = *binfo_scrny;
+  init_screen(vram, xsize, ysize);
 
+  for(;;) {
+    io_hlt();
+  }
+}
+
+void init_screen(char *vram, int xsize, int ysize) {
 	boxfill8(vram, xsize, COL_D_GREEN,  0,         0,          xsize -  1, ysize - 29);
 	boxfill8(vram, xsize, COL_L_GRAY,  0,         ysize - 28, xsize -  1, ysize - 28);
 	boxfill8(vram, xsize, COL_WHITE,  0,         ysize - 27, xsize -  1, ysize - 27);
@@ -47,10 +60,6 @@ void vidar_main(void) {
 	boxfill8(vram, xsize, COL_D_GRAY, xsize - 47, ysize - 23, xsize - 47, ysize -  4);
 	boxfill8(vram, xsize, COL_WHITE, xsize - 47, ysize -  3, xsize -  4, ysize -  3);
 	boxfill8(vram, xsize, COL_WHITE, xsize -  3, ysize - 24, xsize -  3, ysize -  3);
-  
-  for(;;) {
-    io_hlt();
-  }
 }
 
 void init_palette(void)
