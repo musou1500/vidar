@@ -15,7 +15,7 @@ bootpack.o: bootpack.c
 	gcc -fno-pic -m32 bootpack.c -nostdlib -Wl,--oformat=binary -c -o bootpack.o 
 
 bootpack.bin: func.o bootpack.o
-	ld -m elf_i386 -o bootpack.bin -e vidar_main --oformat=binary bootpack.o func.o
+	ld -m elf_i386 -o bootpack.bin --script=bootpack.ls bootpack.o func.o
 
 vidar.sys: vidar.bin bootpack.bin
 	cat vidar.bin bootpack.bin > vidar.sys
@@ -25,7 +25,6 @@ run: vidar.img
 
 clean:
 	rm bootpack.bin bootpack.o vidar.bin vidar.sys func.o ipl.bin vidar.img
-
 
 format:
 	clang-format-6.0 -i bootpack.c;

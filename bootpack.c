@@ -69,7 +69,7 @@ void init_screen(char *vram, int xsize, int ysize) {
 void init_palette(void) {
   // staticにすると，色が正しく表示されないので，仕方なくローカル変数を使っている．
   // ブートのときに意図しない領域に書き込みを行っているのかもしれない
-  unsigned char table_rgb[] = {
+  static unsigned char table_rgb[] = {
       0x00, 0x00, 0x00, /*  0:黒 */
       0xff, 0x00, 0x00, /*  1:明るい赤 */
       0x00, 0xff, 0x00, /*  2:明るい緑 */
