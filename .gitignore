@@ -2,3 +2,4 @@
 *.img
 *.sys
 *.o
+font.c
