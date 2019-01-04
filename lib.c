@@ -1,7 +1,7 @@
 #include "lib.h"
-#include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 static int powi(int n, int m) {
   if (m == 0) {
@@ -15,7 +15,11 @@ static int powi(int n, int m) {
   return res;
 }
 
-static int nth_digit(int num, int n) {
+int nth_digit(int num, int n) {
+  if (num < 0) {
+    num *= -1;
+  }
+
   for (int i = 0; i <= n; i++) {
     if (n == i) {
       return num % 10;
@@ -23,21 +27,32 @@ static int nth_digit(int num, int n) {
       num /= 10;
     }
   }
+
+  return 0;
 }
 
 char *itoa(int n, char *buf, int radix) {
+  bool is_negative = n < 0;
+  if (is_negative) {
+    n *= -1;
+  }
+
   int nlen = 0;
   int i = 0;
   do {
     nlen++;
     i++;
   } while (n > powi(10, i));
+  
+  if (is_negative) {
+    buf[0] = '-';
+    nlen++;
+  }
 
-  for (i = 0; i < nlen; i++) {
+  for (i = is_negative ? 1 : 0; i < nlen; i++) {
     // 0 in ascii: 48
     buf[i] = nth_digit(n, nlen - (i + 1)) + 48;
   }
-
   buf[i] = '\0';
   return buf;
 }
@@ -92,3 +107,49 @@ int sprintf(char *s, const char *format, ...) {
   s++;
   return w_len;
 }
+
+#ifdef TEST
+#include <assert.h>
+
+static bool str_eq(char *a, char *b) {
+  while (*a != '\0' || *b != '\0') {
+    if (*a != *b) {
+      return false;
+    }
+
+    a++;
+    b++;
+  }
+
+  return true;
+}
+
+int main(int argc, const char *argv[])
+{
+  char buf[32];
+
+  // powi
+  assert(powi(10, 0) == 1);
+  assert(powi(10, 1) == 10);
+  assert(powi(10, 2) == 100);
+  assert(strlen("hello") == 5);
+  // strcpy
+  char *src = "nyaa";
+  strcpy(buf, src);
+  assert(str_eq(src, buf));
+
+  // nth_digit
+  assert(nth_digit(114514, 0) == 4);
+  assert(nth_digit(114514, 1) == 1);
+  assert(nth_digit(114514, 2) == 5);
+  assert(nth_digit(114514, 2) == 5);
+  assert(nth_digit(-114514, 2) == 5);
+  
+  // itoa
+  itoa(114514, buf, 10);
+  assert(str_eq(buf, "114514"));
+  itoa(-114514, buf, 10);
+  assert(str_eq(buf, "-114514"));
+  return 0;
+}
+#endif

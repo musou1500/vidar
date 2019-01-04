@@ -35,3 +35,9 @@ clean:
 format:
 	clang-format-6.0 -i bootpack.c lib.c;
 
+# test
+lib_test: lib.c
+	gcc -fno-pic -m32 -DTEST=1 lib.c -o lib_test
+
+test: lib_test
+	./lib_test
