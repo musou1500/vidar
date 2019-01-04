@@ -49,7 +49,7 @@ void vidar_main(void) {
   putfont8_s(binfo->vram, binfo->scrnx, 17, 31, COL_BLACK, "welcome to vidar");
   putfont8_s(binfo->vram, binfo->scrnx, 16, 30, COL_WHITE, "welcome to vidar");
   
-  char *s[32];
+  char s[32];
   sprintf(s, "scrnx = %d scrny = %d", binfo->scrnx, binfo->scrny);
   putfont8_s(binfo->vram, binfo->scrnx, 16, 64, COL_WHITE, s);
 
