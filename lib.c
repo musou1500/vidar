@@ -64,47 +64,55 @@ int strlen(char *s) {
   return i;
 }
 
-char *strcpy(char *s1, const char *s2) {
+char *strcpy(char *dst, const char *src) {
   int i = 0;
-  for (char c = *s2; c != '\0'; i++, c = *(s2 + i)) {
-    *(s1 + i) = c;
+  for (char c = *src; c != '\0'; i++, c = *(src + i)) {
+    *(dst + i) = c;
   }
 
-  *(s1 + i) = '\0';
-  return s1;
+  *(dst + i) = '\0';
+  return dst;
 }
 
-int sprintf(char *s, const char *format, ...) {
-  const char *p = format;
+int sprintf(char *dst, const char *format, ...) {
+  // buffer for itoa
+  char buf[32];
+
+  // written size
+  int w_len = 0;
+
   va_list ap;
   va_start(ap, format);
-  char buf[32];
-  int w_len = 0;
-  while (*p != '\0') {
-    if (*p == '%') {
-      int num = va_arg(ap, int);
-      p++;
-      switch (*p) {
+  
+  while (*format != '\0') {
+    if (*format == '%') {
+      format++;
+      int num, num_len;
+      switch (*format) {
       case 'd':
+        // convert num to str
+        num = va_arg(ap, int);
         itoa(num, buf, 10);
-        int num_len = strlen(buf);
-        strcpy(s, buf);
-        s += num_len;
+        num_len = strlen(buf);
+
+        // copy to dst
+        strcpy(dst, buf);
+        dst += num_len;
         w_len += num_len;
+        format++;
         break;
       }
-      p += 2;
     } else {
-      *s = *p;
-      s++;
-      p++;
+      *dst = *format;
+      dst++;
+      format++;
       w_len++;
     }
   }
-  va_end(ap);
 
-  *s = '\0';
-  s++;
+  va_end(ap);
+  *dst = '\0';
+  w_len++;
   return w_len;
 }
 
@@ -126,17 +134,19 @@ static bool str_eq(char *a, char *b) {
 
 int main(int argc, const char *argv[])
 {
-  char buf[32];
-
   // powi
+  char buf[32];
   assert(powi(10, 0) == 1);
   assert(powi(10, 1) == 10);
   assert(powi(10, 2) == 100);
   assert(strlen("hello") == 5);
+
   // strcpy
   char *src = "nyaa";
   strcpy(buf, src);
-  assert(str_eq(src, buf));
+  assert(str_eq("nyaa", buf));
+  strcpy(buf + 4, src);
+  assert(str_eq("nyaanyaa", buf));
 
   // nth_digit
   assert(nth_digit(114514, 0) == 4);
@@ -150,6 +160,12 @@ int main(int argc, const char *argv[])
   assert(str_eq(buf, "114514"));
   itoa(-114514, buf, 10);
   assert(str_eq(buf, "-114514"));
+  
+  // sprintf
+  sprintf(buf, "scrnx");
+  assert(str_eq(buf, "scrnx"));
+  sprintf(buf, "scrnx = %d scrny = %d", 320, 200);
+  assert(str_eq(buf, "scrnx = 320 scrny = 200"));
   return 0;
 }
 #endif
