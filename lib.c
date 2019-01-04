@@ -1,7 +1,7 @@
 #include "lib.h"
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 static int powi(int n, int m) {
   if (m == 0) {
@@ -43,7 +43,7 @@ char *itoa(int n, char *buf, int radix) {
     nlen++;
     i++;
   } while (n > powi(10, i));
-  
+
   if (is_negative) {
     buf[0] = '-';
     nlen++;
@@ -83,7 +83,7 @@ int sprintf(char *dst, const char *format, ...) {
 
   va_list ap;
   va_start(ap, format);
-  
+
   while (*format != '\0') {
     if (*format == '%') {
       format++;
@@ -132,8 +132,7 @@ static bool str_eq(char *a, char *b) {
   return true;
 }
 
-int main(int argc, const char *argv[])
-{
+int main(int argc, const char *argv[]) {
   // powi
   char buf[32];
   assert(powi(10, 0) == 1);
@@ -154,13 +153,13 @@ int main(int argc, const char *argv[])
   assert(nth_digit(114514, 2) == 5);
   assert(nth_digit(114514, 2) == 5);
   assert(nth_digit(-114514, 2) == 5);
-  
+
   // itoa
   itoa(114514, buf, 10);
   assert(str_eq(buf, "114514"));
   itoa(-114514, buf, 10);
   assert(str_eq(buf, "-114514"));
-  
+
   // sprintf
   sprintf(buf, "scrnx");
   assert(str_eq(buf, "scrnx"));
