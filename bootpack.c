@@ -1,4 +1,9 @@
+#include <stdarg.h>
+#include <stdio.h>
+
 #include "func.h"
+#include "lib.h"
+
 enum {
   COL_BLACK = 0,
   COL_L_RED,
@@ -117,7 +122,7 @@ void boxfill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0,
 }
 
 void putfont8_s(char *vram, int xsize, int x, int y, char c, char *s) {
-  while(*s != '\0') {
+  while (*s != '\0') {
     putfont8(vram, xsize, x, y, c, font + *s * 16);
     s++;
     x += 8;
